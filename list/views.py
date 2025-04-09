@@ -1,3 +1,5 @@
+from django.http import HttpResponseRedirect, HttpRequest
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -47,19 +49,19 @@ class TaskCreateView(CreateView):
     model = Task
     form_class = TaskForm
     template_name = "list/task-form.html"
-    success_url = reverse_lazy("list:task-list")
+    success_url = reverse_lazy("list:index")
 
 
 class TaskUpdateView(UpdateView):
     model = Task
     form_class = TaskForm
     template_name = "list/task-form.html"
-    success_url = reverse_lazy("list:task-list")
+    success_url = reverse_lazy("list:index")
 
 
 class TaskDeleteView(DeleteView):
     model = Task
-    success_url = reverse_lazy("list:task-list")
+    success_url = reverse_lazy("list:index")
     template_name = "list/confirm_delete.html"
 
     def get_context_data(self, **kwargs):
@@ -67,6 +69,17 @@ class TaskDeleteView(DeleteView):
         context["model"] = "Task"
         return context
 
+
 class TaskDetailView(DetailView):
     model = Task
     template_name = "list/task-detail.html"
+
+
+def toggle_task_completed(request: HttpRequest, pk) -> HttpResponseRedirect:
+    task = get_object_or_404(Task, pk=pk)
+    if task.is_done:
+        task.is_done = False
+    else:
+        task.is_done = True
+    task.save()
+    return HttpResponseRedirect(reverse_lazy("list:index"))

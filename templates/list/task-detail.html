@@ -23,4 +23,11 @@
       <p>No tags</p>
     {% endfor %}
   </ul>
+  <div class="mt-5">
+    {% if not task.is_done %}
+      <a href="{% url "list:task-toggle-completed" pk=task.pk %}" class="btn btn-success">Completed</a>
+    {% else %}
+      <a href="{% url "list:task-toggle-completed" pk=task.pk %}" class="btn btn-danger">Undo</a>
+    {% endif %}
+  </div>
 {% endblock %}
