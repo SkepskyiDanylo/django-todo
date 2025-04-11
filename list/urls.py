@@ -10,7 +10,7 @@ from list.views import (
     TaskUpdateView,
     TaskDeleteView,
     TaskDetailView,
-    toggle_task_completed
+    ToggleTask
 )
 
 urlpatterns = [
@@ -23,7 +23,7 @@ urlpatterns = [
     path("tasks/create/", TaskCreateView.as_view(), name="task-create"),
     path("tasks/<int:pk>/update/", TaskUpdateView.as_view(), name="task-update"),
     path("tasks/<int:pk>/delete/", TaskDeleteView.as_view(), name="task-delete"),
-    path("tasks/<int:pk>/toggle_completed/", toggle_task_completed, name="task-toggle-completed"),
+    path("tasks/<int:pk>/toggle_completed/", ToggleTask.as_view(), name="task-toggle-completed"),
 ]
 
 app_name = "list"

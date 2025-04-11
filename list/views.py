@@ -1,7 +1,7 @@
-from django.http import HttpResponseRedirect, HttpRequest
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 
 from list.forms import TagForm, TaskForm
 from list.models import Tag, Task
@@ -75,11 +75,14 @@ class TaskDetailView(DetailView):
     template_name = "list/task-detail.html"
 
 
-def toggle_task_completed(request: HttpRequest, pk) -> HttpResponseRedirect:
-    task = get_object_or_404(Task, pk=pk)
-    if task.is_done:
-        task.is_done = False
-    else:
-        task.is_done = True
-    task.save()
-    return HttpResponseRedirect(reverse_lazy("list:index"))
+class ToggleTask(TemplateView):
+
+    def get(self, request, *args, **kwargs) ->HttpResponseRedirect:
+        pk = self.kwargs.get("pk")
+        task = get_object_or_404(Task, pk=pk)
+        if task.is_done:
+            task.is_done = False
+        else:
+            task.is_done = True
+        task.save()
+        return HttpResponseRedirect(reverse_lazy("list:index"))
