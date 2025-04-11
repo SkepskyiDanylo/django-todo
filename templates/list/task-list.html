@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Home Page
+    <a href="{% url "list:task-create" %}" class="btn btn-primary link-to-page ml-3">Add new task</a>
+  </h1>
+  {% if task_list %}
+    {% for task in task_list %}
+      <div class="p-3 border rounded mt-4">
+        <a href="{% url "list:task-detail" pk=task.pk %}" class="link">
+          <h3><b>Task:</b> #{{ task.pk }}</h3>
+        </a>
+        <p class="text text-muted mt-2">{{ task.content }}</p>
+        <p class="text mt-2"><b>Created at:</b> {{ task.created_at }}</p>
+        {% if task.deadline %}
+          <p><b>Deadline:</b><span
+              class="text {% if task.deadline_passed %}text-danger {% endif %}"> {{ task.deadline_display }}</span>
+          </p>
+        {% endif %}
+        {% if task.is_done %}
+          <p class="text text-success mt-2"><b>completed</b></p>
+        {% else %}
+          <p class="text text-danger mt-2"><b>not completed</b></p>
+        {% endif %}
+        <p><b>Tags:</b></p>
+        <ul>
+          {% for tag in task.tags.all %}
+            <li>{{ tag.name }}</li>
+          {% empty %}
+            <li>No tags</li>
+          {% endfor %}
+        </ul>
+        {% if not task.is_done %}
+          <a href="{% url "list:task-toggle-completed" pk=task.pk %}" class="btn btn-success">Completed</a>
+        {% else %}
+          <a href="{% url "list:task-toggle-completed" pk=task.pk %}" class="btn btn-danger">Undo</a>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <h2 class="mt-4">No tasks</h2>
+  {% endif %}
+{% endblock %}
